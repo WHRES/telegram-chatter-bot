@@ -3,6 +3,7 @@ import random
 from telegram.ext import Updater, MessageHandler, Filters
 
 import config
+import bottoken
 from chat.meow import MeowChatter
 from chat.memeda import MemedaChatter
 
@@ -72,7 +73,7 @@ def error(bot, update, error):
 
 
 def main():
-    updater = Updater(config.token)
+    updater = Updater(bottoken.token)
 
     updater.dispatcher.add_handler(MessageHandler(Filters.text, handler))
     updater.dispatcher.add_error_handler(error)

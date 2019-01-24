@@ -14,6 +14,28 @@ chatters = [
 ]
 
 
+def choose(candidates):
+    weights = [weight for weight, payload in candidates]
+
+    if random.random() < max(weights):
+        # choose one from the candidates
+
+        target = sum(weights) * random.random()
+
+        if debug:
+            print(target)
+
+        for weight, payload in candidates:
+            target -= weight
+
+            if target <= 0:
+                return payload
+    else:
+        # skip
+
+        return None
+
+
 def handler(bot, update):
     file_log = open(config.path_log, 'a')
     file_log.write(
@@ -34,23 +56,10 @@ def handler(bot, update):
 
     # determine whether reply or not
 
-    weights = (weight for weight, text in candidates)
+    text = choose(candidates)
 
-    if random.random() < max(weights):
-        # choose one from the candidates
-
-        target = sum(weights) * random.random()
-
-        if debug:
-            print(target)
-
-        for weight, text in candidates:
-            target -= weight
-
-            if target <= 0:
-                update.message.reply_text(text)
-
-                break
+    if text is not None:
+        update.message.reply_text(text)
 
 
 def error(bot, update, error):

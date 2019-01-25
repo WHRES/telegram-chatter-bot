@@ -5,6 +5,7 @@ from model.repeat import RepeatModel
 from model.memeda import MemedaModel
 
 import random
+import jsonpickle
 from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
@@ -84,6 +85,22 @@ def sticker_handler(bot, update):
 
 
 def main():
+    # load historic data
+
+    with open(config.path_log, 'r') as file:
+        for line in file:
+            update = jsonpickle.decode(line)
+
+            if update.message is not None:
+                if update.message.text is not None:
+                    for prob, model in models:
+                        model.text(update.message)
+                if update.message.sticker is not None:
+                    for prob, model in models:
+                        model.sticker(update.message)
+
+    # start the bot
+
     updater = Updater(bottoken.token)
 
     updater.dispatcher.add_error_handler(error_handler)

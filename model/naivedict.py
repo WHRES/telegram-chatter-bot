@@ -1,6 +1,7 @@
 from model.base import BaseModel
 
-class MemorizeModel(BaseModel):
+
+class NaiveDictModel(BaseModel):
     def __init__(self):
         self.text_last = {}
         self.text_dict = {}
@@ -33,7 +34,7 @@ class MemorizeModel(BaseModel):
             last = self.sticker_last[message.chat.id]
 
             if last not in self.sticker_dict:
-                self.sticker_dict[last] = []
+                self.sticker_dict[last] = set()
 
             self.sticker_dict[last].add(message.sticker.file_id)
 

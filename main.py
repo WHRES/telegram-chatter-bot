@@ -2,7 +2,7 @@ import config
 import bottoken
 import log
 from model.memeda import MemedaModel
-from model.memorize import MemorizeModel
+from model.naivedict import NaiveDictModel
 from model.repeat import RepeatModel
 
 import random
@@ -10,8 +10,8 @@ import jsonpickle
 from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
-    (0.02, MemedaModel()),
-    (0.2, MemorizeModel()),
+    (0.05, MemedaModel()),
+    (0.2, NaiveDictModel()),
     (0.1, RepeatModel()),
 ]
 

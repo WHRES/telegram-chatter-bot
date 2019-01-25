@@ -2,6 +2,7 @@ import config
 
 import jsonpickle
 
+
 def log(update):
     with open(config.path_log, 'a') as file:
         file.write(

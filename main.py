@@ -1,18 +1,20 @@
-import jsonpickle
+import config
+import bottoken
+import log
+from model.repeat import RepeatModel
+from model.memeda import MemedaModel
+
 import random
 from telegram.ext import Updater, MessageHandler, Filters
 
-import config
-import bottoken
-from chat.meow import MeowChatter
-from chat.memeda import MemedaChatter
-
-debug = True
-
-chatters = [
-    (0.02, MemedaChatter()),
-    (0.1, MeowChatter()),
+models = [
+    (0.1, RepeatModel()),
+    (0.02, MemedaModel()),
 ]
+
+
+def error_handler(bot, update, error):
+    log.error(update, error)
 
 
 def choose(candidates):
@@ -23,7 +25,7 @@ def choose(candidates):
 
         target = sum(weights) * random.random()
 
-        if debug:
+        if config.debug:
             print(target)
 
         for weight, payload in candidates:
@@ -37,25 +39,21 @@ def choose(candidates):
         return None
 
 
-def handler(bot, update):
-    file_log = open(config.path_log, 'a')
-    file_log.write(
-        jsonpickle.encode(update) + '\n'
-    )
-    file_log.close()
+def text_handler(bot, update):
+    log.log(update)
 
     # collect the candidates
 
     candidates = []
 
-    for prob, chatter in chatters:
-        weight, text = chatter.talk(update.message)
+    for prob, model in models:
+        weight, text = model.text(update.message)
         candidates.append((prob * weight, text))
 
-    if debug:
+    if config.debug:
         print(candidates)
 
-    # determine whether reply or not
+    # choose and send reply
 
     text = choose(candidates)
 
@@ -63,20 +61,34 @@ def handler(bot, update):
         update.message.reply_text(text)
 
 
-def error(bot, update, error):
-    file_err = open(config.path_err, 'a')
-    file_err.write(
-        jsonpickle.encode(update) + '\n'
-        + jsonpickle.encode(error) + '\n'
-    )
-    file_err.close()
+def sticker_handler(bot, update):
+    log.log(update)
+
+    # collect the candidates
+
+    candidates = []
+
+    for prob, model in models:
+        weight, sticker = model.sticker(update.message)
+        candidates.append((prob * weight, sticker))
+
+    if config.debug:
+        print(candidates)
+
+    # choose and send reply
+
+    sticker = choose(candidates)
+
+    if sticker is not None:
+        update.message.reply_sticker(sticker)
 
 
 def main():
     updater = Updater(bottoken.token)
 
-    updater.dispatcher.add_handler(MessageHandler(Filters.text, handler))
-    updater.dispatcher.add_error_handler(error)
+    updater.dispatcher.add_error_handler(error_handler)
+    updater.dispatcher.add_handler(MessageHandler(Filters.text, text_handler))
+    updater.dispatcher.add_handler(MessageHandler(Filters.sticker, sticker_handler))
 
     updater.start_polling()
     updater.idle()

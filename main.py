@@ -20,12 +20,12 @@ def error_handler(bot, update, error):
     log.error(update, error)
 
 
-def collect(predictions):
+def collect(operation):
     candidates = []
 
     for model_weight, model in models:
-        for weight, text in predictions:
-            candidates.append((model_weight * weight, text))
+        for weight, payload in operation(model):
+            candidates.append((model_weight * weight, payload))
 
     if config.debug:
         print(candidates)
@@ -63,7 +63,7 @@ def text_handler(bot, update):
 
     # collect the candidates
 
-    candidates = collect(model.text(update.message))
+    candidates = collect(lambda model: model.text(update.message))
 
     # choose and send reply
 
@@ -78,7 +78,7 @@ def sticker_handler(bot, update):
 
     # collect the candidates
 
-    candidates = collect(model.sticker(update.message))
+    candidates = collect(lambda model: model.sticker(update.message))
 
     # choose and send reply
 

@@ -18,21 +18,37 @@ def error_handler(bot, update, error):
     log.error(update, error)
 
 
+def collect(predictions):
+    candidates = []
+
+    for model_weight, model in models:
+        for weight, text in predictions:
+            candidates.append((model_weight * weight, text))
+
+    if config.debug:
+        print(candidates)
+
+    return candidates
+
+
 def choose(candidates):
-    weights = [weight for weight, payload in candidates]
+    weights = [
+        weight
+        for weight, payload in candidates
+    ]
 
     if random.random() < max(weights):
         # choose one from the candidates
 
         target = sum(weights) * random.random()
 
-        if config.debug:
-            print(target)
-
         for weight, payload in candidates:
             target -= weight
 
             if target <= 0:
+                if config.debug:
+                    print(payload)
+
                 return payload
     else:
         # skip
@@ -45,14 +61,7 @@ def text_handler(bot, update):
 
     # collect the candidates
 
-    candidates = []
-
-    for prob, model in models:
-        weight, text = model.text(update.message)
-        candidates.append((prob * weight, text))
-
-    if config.debug:
-        print(candidates)
+    candidates = collect(model.text(update.message))
 
     # choose and send reply
 
@@ -67,14 +76,7 @@ def sticker_handler(bot, update):
 
     # collect the candidates
 
-    candidates = []
-
-    for prob, model in models:
-        weight, sticker = model.sticker(update.message)
-        candidates.append((prob * weight, sticker))
-
-    if config.debug:
-        print(candidates)
+    candidates = collect(model.sticker(update.message))
 
     # choose and send reply
 

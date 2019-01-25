@@ -34,15 +34,14 @@ def collect(operation):
 
 
 def choose(candidates):
-    weights = [
-        weight
-        for weight, payload in candidates
-    ]
-
-    if random.random() < max(weights):
+    # TODO: better rate control?
+    if random.random() < 0.2:
         # choose one from the candidates
 
-        target = sum(weights) * random.random()
+        target = sum(
+            weight
+            for weight, payload in candidates
+        ) * random.random()
 
         for weight, payload in candidates:
             target -= weight

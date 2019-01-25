@@ -12,9 +12,9 @@ class MemorizeModel(BaseModel):
             last = self.text_last[message.chat.id]
 
             if last not in self.text_dict:
-                self.text_dict[last] = []
+                self.text_dict[last] = set()
 
-            self.text_dict[last].append(message.text)
+            self.text_dict[last].add(message.text)
 
         self.text_last[message.chat.id] = message.text
 
@@ -35,7 +35,7 @@ class MemorizeModel(BaseModel):
             if last not in self.sticker_dict:
                 self.sticker_dict[last] = []
 
-            self.sticker_dict[last].append(message.sticker.file_id)
+            self.sticker_dict[last].add(message.sticker.file_id)
 
         self.sticker_last[message.chat.id] = message.sticker.file_id
 

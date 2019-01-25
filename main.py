@@ -11,7 +11,7 @@ from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
     (0.02, MemedaModel()),
-    (0.5, MemorizeModel()),
+    (0.2, MemorizeModel()),
     (0.1, RepeatModel()),
 ]
 
@@ -34,57 +34,55 @@ def collect(operation):
 
 
 def choose(candidates):
-    # TODO: better rate control?
-    if random.random() < 0.2:
-        # choose one from the candidates
+    # choose one from the candidates
 
-        target = sum(
-            weight
-            for weight, payload in candidates
-        ) * random.random()
+    target = sum(
+        weight
+        for weight, payload in candidates
+    ) * random.random()
 
-        for weight, payload in candidates:
-            target -= weight
+    for weight, payload in candidates:
+        target -= weight
 
-            if target <= 0:
-                if config.debug:
-                    print(payload)
+        if target <= 0:
+            if config.debug:
+                print(payload)
 
-                return payload
-    else:
-        # skip
-
-        return None
+            return payload
 
 
 def text_handler(bot, update):
     log.log(update)
 
-    # collect the candidates
+    # TODO: better rate control?
+    if random.random() < 0.2:
+        # collect the candidates
 
-    candidates = collect(lambda model: model.text(update.message))
+        candidates = collect(lambda model: model.text(update.message))
 
-    # choose and send reply
+        # choose and send reply
 
-    text = choose(candidates)
+        text = choose(candidates)
 
-    if text is not None:
-        update.message.reply_text(text)
+        if text is not None:
+            update.message.reply_text(text)
 
 
 def sticker_handler(bot, update):
     log.log(update)
 
-    # collect the candidates
+    # TODO: better rate control?
+    if random.random() < 0.1:
+        # collect the candidates
 
-    candidates = collect(lambda model: model.sticker(update.message))
+        candidates = collect(lambda model: model.sticker(update.message))
 
-    # choose and send reply
+        # choose and send reply
 
-    sticker = choose(candidates)
+        sticker = choose(candidates)
 
-    if sticker is not None:
-        update.message.reply_sticker(sticker)
+        if sticker is not None:
+            update.message.reply_sticker(sticker)
 
 
 def main():

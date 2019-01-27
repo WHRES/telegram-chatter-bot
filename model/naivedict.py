@@ -8,44 +8,39 @@ class NaiveDictModel(BaseModel):
         self.sticker_last = {}
         self.sticker_dict = {}
 
-    def text(self, message):
-        if message.chat.id in self.text_last:
-            last = self.text_last[message.chat.id]
+    def _get(self, message, c_last, c_dict, payload):
+        # update the dict
 
-            if last not in self.text_dict:
-                self.text_dict[last] = set()
+        if message.chat.id in c_last:
+            last = c_last[message.chat.id]
 
-            self.text_dict[last].add(message.text)
+            c_dict[last] = c_dict.get(last, set())
+            c_dict[last].add(payload)
 
-        self.text_last[message.chat.id] = message.text
+        c_last[message.chat.id] = payload
 
-        if message.text in self.text_dict:
-            pool = self.text_dict[message.text]
+        # choose the best reply
 
+        if payload in c_dict:
             return [
-                (1 / len(pool), text)
-                for text in pool
+                (1 / len(c_dict[payload]), reply_payload)
+                for reply_payload in c_dict[payload]
             ]
         else:
             return []
+
+    def text(self, message):
+        return self._get(
+            message,
+            self.text_last,
+            self.text_dict,
+            message.text
+        )
 
     def sticker(self, message):
-        if message.chat.id in self.sticker_last:
-            last = self.sticker_last[message.chat.id]
-
-            if last not in self.sticker_dict:
-                self.sticker_dict[last] = set()
-
-            self.sticker_dict[last].add(message.sticker.file_id)
-
-        self.sticker_last[message.chat.id] = message.sticker.file_id
-
-        if message.sticker.file_id in self.sticker_dict:
-            pool = self.sticker_dict[message.sticker.file_id]
-
-            return [
-                (1 / len(pool), sticker)
-                for sticker in pool
-            ]
-        else:
-            return []
+        return self._get(
+            message,
+            self.sticker_last,
+            self.sticker_dict,
+            message.sticker.file_id
+        )

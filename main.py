@@ -2,6 +2,7 @@ import config
 import bottoken
 import log
 from model.memeda import MemedaModel
+from model.memeda2 import Memeda2Model
 from model.naivedict import NaiveDictModel
 from model.repeat import RepeatModel
 
@@ -11,6 +12,7 @@ from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
     (0.05, MemedaModel()),
+    (0.1, Memeda2Model()),
     (0.2, NaiveDictModel()),
     (0.1, RepeatModel()),
 ]

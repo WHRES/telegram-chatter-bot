@@ -1,5 +1,7 @@
 # telegram-chatter-bot
 An experimental chat bot
+
+**这是一个实验计划**
 ***
 ## 未来计划 Coming soon
 * 添加好感度隐藏权重

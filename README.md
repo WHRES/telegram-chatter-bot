@@ -1,7 +1,7 @@
 # telegram-chatter-bot
 An experimental chat bot
 
-**这是一个实验计划**
+**这是一个基于谷歌TensorFlow的 NLP 聊天 Bot 实验计划**
 ***
 ## 未来计划 Coming soon
 * 添加好感度隐藏权重

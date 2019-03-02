@@ -1,6 +1,7 @@
 import config
 import bottoken
 import log
+from model.fuzzdict import FuzzDictModel
 from model.memeda import MemedaModel
 from model.memeda2 import Memeda2Model
 from model.naivedict import NaiveDictModel
@@ -11,6 +12,7 @@ import jsonpickle
 from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
+    (0.2, FuzzDictModel()),
     (0.05, MemedaModel()),
     (0.05, Memeda2Model()),
     (0.2, NaiveDictModel()),

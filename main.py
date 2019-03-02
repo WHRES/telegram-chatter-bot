@@ -12,7 +12,7 @@ from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
     (0.05, MemedaModel()),
-    (0.1, Memeda2Model()),
+    (0.05, Memeda2Model()),
     (0.2, NaiveDictModel()),
     (0.1, RepeatModel()),
 ]
@@ -57,7 +57,7 @@ def text_handler(bot, update):
     log.log(update)
 
     # TODO: better rate control?
-    if random.random() < 0.2:
+    if random.random() < config.rate_text:
         # collect the candidates
 
         candidates = collect(lambda model: model.text(update.message))
@@ -74,7 +74,7 @@ def sticker_handler(bot, update):
     log.log(update)
 
     # TODO: better rate control?
-    if random.random() < 0.1:
+    if random.random() < config.rate_sticker:
         # collect the candidates
 
         candidates = collect(lambda model: model.sticker(update.message))

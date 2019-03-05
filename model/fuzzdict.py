@@ -7,8 +7,6 @@ class FuzzDictModel(BaseModel):
     def __init__(self):
         self.text_last = {}
         self.text_set = set()
-        self.sticker_last = {}
-        self.sticker_set = set()
 
     def _get(self, message, c_last, c_set, payload):
         # update the set
@@ -45,12 +43,4 @@ class FuzzDictModel(BaseModel):
             self.text_last,
             self.text_set,
             message.text
-        )
-
-    def sticker(self, message):
-        return self._get(
-            message,
-            self.sticker_last,
-            self.sticker_set,
-            message.sticker.file_id
         )

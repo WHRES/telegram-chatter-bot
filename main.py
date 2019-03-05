@@ -12,11 +12,11 @@ import jsonpickle
 from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
-    (0.2, FuzzDictModel()),
-    (0.05, MemedaModel()),
-    (0.05, Memeda2Model()),
-    (0.2, NaiveDictModel()),
-    (0.1, RepeatModel()),
+    (0.5, 0, FuzzDictModel()),
+    (0.05, 0, MemedaModel()),
+    (0.1, 0, Memeda2Model()),
+    (0.25, 1, NaiveDictModel()),
+    (0.1, 0.25, RepeatModel()),
 ]
 
 
@@ -24,12 +24,15 @@ def error_handler(bot, update, error):
     log.error(update, error)
 
 
-def collect(operation):
+def collect(operation, weight_index):
     candidates = []
 
-    for model_weight, model in models:
+    for text_weight, sticker_weight, model in models:
         for weight, payload in operation(model):
-            candidates.append((model_weight * weight, payload))
+            candidates.append((
+                (text_weight, sticker_weight)[weight_index] * weight,
+                payload,
+            ))
 
     if config.debug:
         print(candidates)
@@ -62,7 +65,7 @@ def text_handler(bot, update):
     if random.random() < config.rate_text:
         # collect the candidates
 
-        candidates = collect(lambda model: model.text(update.message))
+        candidates = collect(lambda model: model.text(update.message), 0)
 
         # choose and send reply
 
@@ -79,7 +82,7 @@ def sticker_handler(bot, update):
     if random.random() < config.rate_sticker:
         # collect the candidates
 
-        candidates = collect(lambda model: model.sticker(update.message))
+        candidates = collect(lambda model: model.sticker(update.message), 1)
 
         # choose and send reply
 
@@ -98,10 +101,10 @@ def main():
 
             if update.message is not None:
                 if update.message.text is not None:
-                    for prob, model in models:
+                    for text_weight, sticker_weight, model in models:
                         model.text(update.message)
                 if update.message.sticker is not None:
-                    for prob, model in models:
+                    for text_weight, sticker_weight, model in models:
                         model.sticker(update.message)
 
     # start the bot

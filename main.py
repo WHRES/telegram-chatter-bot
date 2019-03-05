@@ -5,6 +5,7 @@ from model.fuzzdict import FuzzDictModel
 from model.memeda import MemedaModel
 from model.memeda2 import Memeda2Model
 from model.naivedict import NaiveDictModel
+from model.partialfuzzdict import PartialFuzzDictModel
 from model.repeat import RepeatModel
 
 import random
@@ -16,6 +17,7 @@ models = [
     (0.05, 0, MemedaModel()),
     (0.1, 0, Memeda2Model()),
     (0.25, 1, NaiveDictModel()),
+    (0.25, 0, PartialFuzzDictModel()),
     (0.1, 0.25, RepeatModel()),
 ]
 

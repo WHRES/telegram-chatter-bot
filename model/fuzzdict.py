@@ -18,24 +18,27 @@ class FuzzDictModel(BaseModel):
 
         c_last[message.chat.id] = payload
 
-        result = [
-            (
-                (0.01 * fuzz.ratio(payload, test_payload)) ** 2,
-                reply_payload,
-            )
-            for test_payload, reply_payload in c_set
-        ]
-        total = sum(
-            weight
-            for weight, reply_payload in result
-            if weight > 0.25
-        )
+        # choose the best reply
 
-        return [
-            (weight / total, reply_payload)
-            for weight, reply_payload in result
-            if weight > 0.25
-        ]
+        if self._ready:
+            result = [
+                (
+                    (0.01 * fuzz.ratio(payload, test_payload)) ** 2,
+                    reply_payload,
+                )
+                for test_payload, reply_payload in c_set
+            ]
+            total = sum(
+                weight
+                for weight, reply_payload in result
+                if weight > 0.25
+            )
+
+            return [
+                (weight / total, reply_payload)
+                for weight, reply_payload in result
+                if weight > 0.25
+            ]
 
     def text(self, message):
         return self._get(

@@ -12,24 +12,27 @@ class PartialFuzzDictModel(BaseModel):
 
         c_set.add(payload)
 
-        result = [
-            (
-                (0.01 * fuzz.partial_ratio(payload, test_payload)) ** 2,
-                test_payload,
-            )
-            for test_payload in c_set
-        ]
-        total = sum(
-            weight
-            for weight, reply_payload in result
-            if weight > 0.25
-        )
+        # choose the best reply
 
-        return [
-            (weight / total, reply_payload)
-            for weight, reply_payload in result
-            if weight > 0.25
-        ]
+        if self._ready:
+            result = [
+                (
+                    (0.01 * fuzz.partial_ratio(payload, test_payload)) ** 2,
+                    test_payload,
+                )
+                for test_payload in c_set
+            ]
+            total = sum(
+                weight
+                for weight, reply_payload in result
+                if weight > 0.25
+            )
+
+            return [
+                (weight / total, reply_payload)
+                for weight, reply_payload in result
+                if weight > 0.25
+            ]
 
     def text(self, message):
         return self._get(

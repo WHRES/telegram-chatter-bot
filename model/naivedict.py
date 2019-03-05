@@ -21,13 +21,14 @@ class NaiveDictModel(BaseModel):
 
         # choose the best reply
 
-        if payload in c_dict:
-            return [
-                (1 / len(c_dict[payload]), reply_payload)
-                for reply_payload in c_dict[payload]
-            ]
-        else:
-            return []
+        if self._ready:
+            if payload in c_dict:
+                return [
+                    (1 / len(c_dict[payload]), reply_payload)
+                    for reply_payload in c_dict[payload]
+                ]
+            else:
+                return []
 
     def text(self, message):
         return self._get(

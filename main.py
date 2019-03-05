@@ -119,6 +119,9 @@ def main():
     for text_weight, sticker_weight, model in models:
         model.ready()
 
+    if config.debug:
+        print('ready')
+
     # start the bot
 
     updater = Updater(bottoken.token)

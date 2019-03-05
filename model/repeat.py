@@ -13,4 +13,4 @@ class RepeatModel(BaseModel):
 
     def sticker(self, message):
         if self._ready:
-            return message.sticker.file_id
+            return [(1, message.sticker.file_id)]

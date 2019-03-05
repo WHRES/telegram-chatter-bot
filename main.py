@@ -26,13 +26,13 @@ def error_handler(bot, update, error):
     log.error(update, error)
 
 
-def collect(operation, weight_index):
+def collect(operation, event_index):
     candidates = []
 
     for text_weight, sticker_weight, model in models:
         for weight, payload in operation(model):
             candidates.append((
-                (text_weight, sticker_weight)[weight_index] * weight,
+                (text_weight, sticker_weight)[event_index] * weight,
                 payload,
             ))
 
@@ -65,37 +65,40 @@ def choose(candidates):
         return None
 
 
-def text_handler(bot, update):
+def handler(bot, update, event_index, collect_operation, reply_operation):
     log.log(update)
 
-    if random.random() < config.rate_text:
+    if random.random() < (config.rate_text, config.rate_sticker)[event_index]:
         # collect the candidates
 
-        candidates = collect(lambda model: model.text(update.message), 0)
+        candidates = collect(collect_operation, 0)
 
         # choose and send reply
 
-        text = choose(candidates)
+        payload = choose(candidates)
 
-        if text is not None:
-            update.message.reply_text(text)
+        if payload is not None:
+            reply_operation(payload)
+
+
+def text_handler(bot, update):
+    handler(
+        bot,
+        update,
+        0,
+        lambda model: model.text(update.message),
+        lambda payload: update.message.reply_text(payload)
+    )
 
 
 def sticker_handler(bot, update):
-    log.log(update)
-
-    # TODO: better rate control?
-    if random.random() < config.rate_sticker:
-        # collect the candidates
-
-        candidates = collect(lambda model: model.sticker(update.message), 1)
-
-        # choose and send reply
-
-        sticker = choose(candidates)
-
-        if sticker is not None:
-            update.message.reply_sticker(sticker)
+    handler(
+        bot,
+        update,
+        1,
+        lambda model: model.sticker(update.message),
+        lambda payload: update.message.reply_sticker(payload)
+    )
 
 
 def main():

@@ -43,25 +43,29 @@ def collect(operation, weight_index):
 def choose(candidates):
     # choose one from the candidates
 
-    target = sum(
+    total = sum(
         weight
         for weight, payload in candidates
-    ) * random.random()
+    )
 
-    for weight, payload in candidates:
-        target -= weight
+    if random.random() < total:
+        target = total * random.random()
 
-        if target <= 0:
-            if config.debug:
-                print(payload)
+        for weight, payload in candidates:
+            target -= weight
 
-            return payload
+            if target <= 0:
+                if config.debug:
+                    print(payload)
+
+                return payload
+    else:
+        return None
 
 
 def text_handler(bot, update):
     log.log(update)
 
-    # TODO: better rate control?
     if random.random() < config.rate_text:
         # collect the candidates
 

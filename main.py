@@ -14,7 +14,7 @@ import jsonpickle
 from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
-    (0.25, 0, ChatterModel()),
+    # (0.25, 0, ChatterModel()), # TODO
     (0.5, 0, FuzzDictModel()),
     (0.05, 0, MemedaModel()),
     (0.1, 0, Memeda2Model()),
@@ -115,9 +115,15 @@ def sticker_handler(bot, update):
 def main():
     # load historic data
 
+    count = 0
+
     with open(config.path_log, 'r') as file:
         for line in file:
             update = jsonpickle.decode(line)
+
+            count += 1
+            if count % 1000 == 0:
+                print('load:', count)
 
             if update.message is not None:
                 if update.message.text is not None:
@@ -127,8 +133,8 @@ def main():
                     for text_weight, sticker_weight, model in models:
                         model.sticker(update.message, False)
 
-    if config.debug:
-        print('ready')
+    print('total:', count)
+    print('ready')
 
     # start the bot
 

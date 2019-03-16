@@ -41,10 +41,13 @@ class FuzzDictModel(BaseModel):
             ]
 
     def text(self, message, predict):
-        return self._get(
-            message,
-            self.text_last,
-            self.text_set,
-            message.text,
-            predict
-        )
+        if len(message.text) >= 3:
+            return self._get(
+                message,
+                self.text_last,
+                self.text_set,
+                message.text,
+                predict
+            )
+        elif predict:
+            return []

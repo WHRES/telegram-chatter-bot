@@ -31,13 +31,16 @@ class NaiveDictModel(BaseModel):
                 return []
 
     def text(self, message, predict):
-        return self._get(
-            message,
-            self.text_last,
-            self.text_dict,
-            message.text,
-            predict
-        )
+        if len(message.text) >= 3:
+            return self._get(
+                message,
+                self.text_last,
+                self.text_dict,
+                message.text,
+                predict
+            )
+        elif predict:
+            return []
 
     def sticker(self, message, predict):
         return self._get(

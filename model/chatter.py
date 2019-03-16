@@ -9,7 +9,7 @@ class ChatterModel(BaseModel):
         self.bot = ChatBot('tgbot')
         self.text_last = {}
 
-    def _get(self, message, c_last, payload):
+    def _get(self, message, c_last, payload, predict):
         # update the bot
 
         statement = Statement(payload)
@@ -23,14 +23,15 @@ class ChatterModel(BaseModel):
 
         # choose the best reply
 
-        if self._ready:
+        if predict:
             response = self.bot.generate_response(statement)
 
             return [(response.confidence, response.text)]
 
-    def text(self, message):
+    def text(self, message, predict):
         return self._get(
             message,
             self.text_last,
-            message.text
+            message.text,
+            predict
         )

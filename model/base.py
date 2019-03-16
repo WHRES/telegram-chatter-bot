@@ -1,11 +1,6 @@
 class BaseModel:
-    _ready = False
-
-    def text(self, message):
+    def text(self, message, predict):
         return []
 
-    def sticker(self, message):
+    def sticker(self, message, predict):
         return []
-
-    def ready(self):
-        self._ready = True

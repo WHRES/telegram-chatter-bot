@@ -8,7 +8,7 @@ class FuzzDictModel(BaseModel):
         self.text_last = {}
         self.text_set = set()
 
-    def _get(self, message, c_last, c_set, payload):
+    def _get(self, message, c_last, c_set, payload, predict):
         # update the set
 
         if message.chat.id in c_last:
@@ -20,7 +20,7 @@ class FuzzDictModel(BaseModel):
 
         # choose the best reply
 
-        if self._ready:
+        if predict:
             result = [
                 (
                     (0.01 * fuzz.ratio(payload, test_payload)) ** 2,
@@ -40,10 +40,11 @@ class FuzzDictModel(BaseModel):
                 if weight > 0.25
             ]
 
-    def text(self, message):
+    def text(self, message, predict):
         return self._get(
             message,
             self.text_last,
             self.text_set,
-            message.text
+            message.text,
+            predict
         )

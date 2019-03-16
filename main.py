@@ -28,11 +28,16 @@ def error_handler(bot, update, error):
     log.error(update, error)
 
 
+def train(operation):
+    for text_weight, sticker_weight, model in models:
+        operation(model, False)
+
+
 def collect(operation, event_index):
     candidates = []
 
     for text_weight, sticker_weight, model in models:
-        for weight, payload in operation(model):
+        for weight, payload in operation(model, True):
             candidates.append((
                 (text_weight, sticker_weight)[event_index] * weight,
                 payload,
@@ -81,6 +86,10 @@ def handler(bot, update, event_index, collect_operation, reply_operation):
 
         if payload is not None:
             reply_operation(payload)
+    else:
+        # train without collecting
+
+        train(collect_operation)
 
 
 def text_handler(bot, update):
@@ -88,7 +97,7 @@ def text_handler(bot, update):
         bot,
         update,
         0,
-        lambda model: model.text(update.message),
+        lambda model, predict: model.text(update.message, predict),
         lambda payload: update.message.reply_text(payload)
     )
 
@@ -98,7 +107,7 @@ def sticker_handler(bot, update):
         bot,
         update,
         1,
-        lambda model: model.sticker(update.message),
+        lambda model, predict: model.sticker(update.message, predict),
         lambda payload: update.message.reply_sticker(payload)
     )
 
@@ -113,13 +122,10 @@ def main():
             if update.message is not None:
                 if update.message.text is not None:
                     for text_weight, sticker_weight, model in models:
-                        model.text(update.message)
+                        model.text(update.message, False)
                 if update.message.sticker is not None:
                     for text_weight, sticker_weight, model in models:
-                        model.sticker(update.message)
-
-    for text_weight, sticker_weight, model in models:
-        model.ready()
+                        model.sticker(update.message, False)
 
     if config.debug:
         print('ready')

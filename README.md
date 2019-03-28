@@ -1,5 +1,7 @@
 # Telegram-Chatter-Bot
 
+![](https://www.nxp.com/assets/images/en/banners/MACHINE-LEARNINGB.jpg?raw=true)
+
 An experimental chat bot
 
 **这是一个基于谷歌TensorFlow的 NLP 聊天 Bot 实验计划**

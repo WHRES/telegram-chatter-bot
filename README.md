@@ -1,6 +1,6 @@
 # Telegram-Chatter-Bot
 
-![](https://www.nxp.com/assets/images/en/banners/MACHINE-LEARNINGB.jpg?raw=true)
+![](https://camo.githubusercontent.com/7268038c8227e3b63fdde52b301564da2c2e3252/68747470733a2f2f7777772e6e78702e636f6d2f6173736574732f696d616765732f656e2f62616e6e6572732f4d414348494e452d4c4541524e494e47422e6a70673f7261773d74727565)
 
 An experimental chat bot
 

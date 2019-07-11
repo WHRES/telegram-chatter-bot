@@ -14,13 +14,13 @@ import jsonpickle
 from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
-    # (0.25, 0, ChatterModel()), # TODO
+    # (0.2, 0, ChatterModel()), # TODO
     (0.5, 0, FuzzDictModel()),
-    (0.05, 0, MemedaModel()),
-    (0.1, 0, Memeda2Model()),
-    (0.25, 1, NaiveDictModel()),
-    (0.25, 0, PartialFuzzDictModel()),
-    (0.1, 0.25, RepeatModel()),
+    (0.02, 0, MemedaModel()),
+    (0.02, 0, Memeda2Model()),
+    (0.2, 0.8, NaiveDictModel()),
+    (0.2, 0, PartialFuzzDictModel()),
+    (0.06, 0.2, RepeatModel()),
 ]
 
 

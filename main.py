@@ -147,8 +147,12 @@ def main():
     updater = Updater(bottoken.token)
 
     updater.dispatcher.add_error_handler(error_handler)
-    updater.dispatcher.add_handler(MessageHandler(Filters.text, text_handler))
-    updater.dispatcher.add_handler(MessageHandler(Filters.sticker, sticker_handler))
+    updater.dispatcher.add_handler(
+        MessageHandler(Filters.text, text_handler)
+    )
+    updater.dispatcher.add_handler(
+        MessageHandler(Filters.sticker, sticker_handler)
+    )
 
     updater.start_polling()
     updater.idle()

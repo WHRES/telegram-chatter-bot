@@ -5,6 +5,9 @@ class PartialCharBagDictModel(BaseModel):
     def __init__(self):
         self.text_set = set()
 
+    def _compare(set1, set2):
+        return len(set1.intersection(set2)) / (len(set1) + len(set2))
+
     def _get(self, message, c_last, c_set, payload, predict):
         # update the set
 
@@ -16,9 +19,9 @@ class PartialCharBagDictModel(BaseModel):
             payload_set = set(payload)
             result = [
                 (
-                    (
-                        len(payload_set.intersection(reply_set))
-                            / (len(payload_set) + len(reply_set))
+                    self._compare(
+                        payload_set,
+                        reply_set
                     ) ** 1.5,
                     reply_payload,
                 )

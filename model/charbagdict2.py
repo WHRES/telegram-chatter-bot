@@ -6,6 +6,9 @@ class CharBagDict2Model(BaseModel):
         self.text_last = {}
         self.text_set = set()
 
+    def _compare(set1, set2):
+        return len(set1.intersection(set2)) / (len(set1) + len(set2))
+
     def _get(self, message, c_last, c_set, payload, predict):
         # update the set
 
@@ -22,9 +25,9 @@ class CharBagDict2Model(BaseModel):
             payload_set = set(payload)
             result = [
                 (
-                    (
-                        len(payload_set.union(reply_set).intersection(test_set))
-                            / (len(payload_set.union(reply_set)) + len(test_set))
+                    self._compare(
+                        payload_set.union(reply_set),
+                        test_set
                     ) ** 1.5 * max(len(payload) / len(reply_payload), 1),
                     reply_payload,
                 )

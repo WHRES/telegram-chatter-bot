@@ -81,7 +81,12 @@ def choose(candidates):
 def handler(bot, update, event_index, collect_operation, reply_operation):
     log.log(update)
 
-    if random.random() < (config.rate_text, config.rate_sticker)[event_index]:
+    rate = (config.rate_text, config.rate_sticker)[event_index]
+
+    if (
+        update.message.reply_to_message is not None
+            and update.message.reply_to_message.chat.id == bottoken.self
+    ) or random.random() < rate:
         # collect the candidates
 
         candidates = collect(collect_operation, 0)

@@ -75,8 +75,8 @@ def choose(candidates):
                     print(payload)
 
                 return payload
-    else:
-        return None
+
+    return None
 
 
 def handler(bot, update, event_index, collect_operation, reply_operation):

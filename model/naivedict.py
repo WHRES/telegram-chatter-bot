@@ -27,8 +27,8 @@ class NaiveDictModel(BaseModel):
                     (1 / len(c_dict[payload]), reply_payload)
                     for reply_payload in c_dict[payload]
                 ]
-            else:
-                return []
+
+            return []
 
     def text(self, message, predict):
         if len(message.text) >= 3:

@@ -1,0 +1,55 @@
+from model.base import BaseModel
+
+
+class CharBagDict2Model(BaseModel):
+    def __init__(self):
+        self.text_last = {}
+        self.text_set = set()
+
+    def _get(self, message, c_last, c_set, payload, predict):
+        # update the set
+
+        if message.chat.id in c_last:
+            last = c_last[message.chat.id]
+
+            c_set.add((set(last).union(set(payload)), set(payload), payload))
+
+        c_last[message.chat.id] = payload
+
+        # choose the best reply
+
+        if predict:
+            payload_set = set(payload)
+            result = [
+                (
+                    (
+                        len(payload_set.union(reply_set).intersection(test_set))
+                            / (len(payload_set.union(reply_set)) + len(test_set))
+                    ) ** 1.5 * max(len(payload) / len(reply_payload), 1),
+                    reply_payload,
+                )
+                for test_set, reply_set, reply_payload in c_set
+            ]
+            total = sum(
+                weight
+                for weight, reply_payload in result
+                if weight > 0.25
+            )
+
+            return [
+                (weight / total, reply_payload)
+                for weight, reply_payload in result
+                if weight > 0.25
+            ]
+
+    def text(self, message, predict):
+        if len(message.text) >= 3:
+            return self._get(
+                message,
+                self.text_last,
+                self.text_set,
+                message.text,
+                predict
+            )
+        elif predict:
+            return []

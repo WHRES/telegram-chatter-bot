@@ -6,7 +6,7 @@ class CharBagDictModel(BaseModel):
         self.text_last = {}
         self.text_set = set()
 
-    def _compare(set1, set2):
+    def _compare(self, set1, set2):
         return len(set1.intersection(set2)) / (len(set1) + len(set2))
 
     def _get(self, message, c_last, c_set, payload, predict):

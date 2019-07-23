@@ -1,6 +1,6 @@
 class BaseModel:
-    def text(self, message, predict):
+    def text(self, _message, _predict):
         return []
 
-    def sticker(self, message, predict):
+    def sticker(self, _message, _predict):
         return []

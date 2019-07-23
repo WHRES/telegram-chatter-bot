@@ -8,7 +8,7 @@ class PartialCharBagDictModel(BaseModel):
     def _compare(self, set1, set2):
         return len(set1.intersection(set2)) / (len(set1) + len(set2))
 
-    def _get(self, message, c_set, payload, predict):
+    def _get(self, c_set, payload, predict):
         # update the set
 
         c_set.add(payload)
@@ -41,7 +41,6 @@ class PartialCharBagDictModel(BaseModel):
     def text(self, message, predict):
         if len(message.text) >= 3:
             return self._get(
-                message,
                 self.text_set,
                 message.text,
                 predict

@@ -1,7 +1,7 @@
-from model.base import BaseModel
-
 from chatterbot import ChatBot
 from chatterbot.conversation import Statement
+
+from model.base import BaseModel
 
 
 class ChatterModel(BaseModel):

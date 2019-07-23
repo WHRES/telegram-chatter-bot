@@ -1,9 +1,15 @@
-import config
+import random
+import traceback
+
+import jsonpickle
+from telegram.ext import Updater, MessageHandler, Filters
+
 import bottoken
+import config
 import log
 from model.charbagdict import CharBagDictModel
 from model.charbagdict2 import CharBagDict2Model
-from model.chatter import ChatterModel
+# from model.chatter import ChatterModel
 from model.fuzzdict import FuzzDictModel
 from model.memeda import MemedaModel
 from model.memeda2 import Memeda2Model
@@ -11,11 +17,6 @@ from model.naivedict import NaiveDictModel
 from model.partialcharbagdict import PartialCharBagDictModel
 from model.partialfuzzdict import PartialFuzzDictModel
 from model.repeat import RepeatModel
-
-import random
-import jsonpickle
-import traceback
-from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
     (0.15, 0, CharBagDictModel()),
@@ -31,12 +32,12 @@ models = [
 ]
 
 
-def error_handler(bot, update, error):
-    log.error(update, error)
+def error_handler(_bot, update, err):
+    log.error(update, err)
 
 
 def train(operation):
-    for text_weight, sticker_weight, model in models:
+    for _, _, model in models:
         operation(model, False)
 
 
@@ -115,7 +116,7 @@ def text_handler(bot, update):
         update,
         0,
         lambda model, predict: model.text(update.message, predict),
-        lambda payload: update.message.reply_text(payload)
+        update.message.reply_text
     )
 
 
@@ -125,7 +126,7 @@ def sticker_handler(bot, update):
         update,
         1,
         lambda model, predict: model.sticker(update.message, predict),
-        lambda payload: update.message.reply_sticker(payload)
+        update.message.reply_sticker
     )
 
 
@@ -144,10 +145,10 @@ def main():
 
             if update.message is not None:
                 if update.message.text is not None:
-                    for text_weight, sticker_weight, model in models:
+                    for _, _, model in models:
                         model.text(update.message, False)
                 if update.message.sticker is not None:
-                    for text_weight, sticker_weight, model in models:
+                    for _, _, model in models:
                         model.sticker(update.message, False)
 
     print('total:', count)

@@ -1,6 +1,6 @@
-import config
-
 import jsonpickle
+
+import config
 
 
 def log(update):
@@ -10,9 +10,9 @@ def log(update):
         )
 
 
-def error(update, error):
+def error(update, err):
     with open(config.path_err, 'a') as file:
         file.write(
             jsonpickle.encode(update) + '\n'
-            + jsonpickle.encode(error) + '\n'
+            + jsonpickle.encode(err) + '\n'
         )

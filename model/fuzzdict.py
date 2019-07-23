@@ -1,6 +1,6 @@
-from model.base import BaseModel
-
 from fuzzywuzzy import fuzz
+
+from model.base import BaseModel
 
 
 class FuzzDictModel(BaseModel):

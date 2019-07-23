@@ -1,11 +1,14 @@
 import config
 import bottoken
 import log
+from model.charbagdict import CharBagModel
+from model.charbagdict2 import CharBagModel2
 from model.chatter import ChatterModel
 from model.fuzzdict import FuzzDictModel
 from model.memeda import MemedaModel
 from model.memeda2 import Memeda2Model
 from model.naivedict import NaiveDictModel
+from model.partialcharbagdict import PartialCharBagDictModel
 from model.partialfuzzdict import PartialFuzzDictModel
 from model.repeat import RepeatModel
 
@@ -14,13 +17,16 @@ import jsonpickle
 from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
-    # (0.2, 0, ChatterModel()), # TODO
-    (0.5, 0, FuzzDictModel()),
+    (0.15, 0, CharBagModel()),
+    (0.15, 0, CharBagModel2()),
+    # (0, 0, ChatterModel()), # TODO
+    (0.25, 0, FuzzDictModel()),
     (0.02, 0, MemedaModel()),
-    (0.02, 0, Memeda2Model()),
-    (0.2, 0.8, NaiveDictModel()),
-    (0.2, 0, PartialFuzzDictModel()),
-    (0.06, 0.2, RepeatModel()),
+    (0.03, 0, Memeda2Model()),
+    (0.15, 0.8, NaiveDictModel()),
+    (0.1, 0, PartialCharBagDictModel()),
+    (0.1, 0, PartialFuzzDictModel()),
+    (0.05, 0.2, RepeatModel()),
 ]
 
 

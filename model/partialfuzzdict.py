@@ -17,10 +17,12 @@ class PartialFuzzDictModel(BaseModel):
         if predict:
             result = [
                 (
-                    (0.01 * fuzz.partial_ratio(payload, test_payload)) ** 2,
-                    test_payload,
+                    (
+                        0.01 * fuzz.partial_ratio(payload, reply_payload)
+                    ) ** 1.5,
+                    reply_payload,
                 )
-                for test_payload in c_set
+                for reply_payload in c_set
             ]
             total = sum(
                 weight

@@ -14,6 +14,7 @@ from model.repeat import RepeatModel
 
 import random
 import jsonpickle
+import traceback
 from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
@@ -31,7 +32,6 @@ models = [
 
 
 def error_handler(bot, update, error):
-    print(error)
     log.error(update, error)
 
 
@@ -82,26 +82,30 @@ def choose(candidates):
 def handler(bot, update, event_index, collect_operation, reply_operation):
     log.log(update)
 
-    rate = (config.rate_text, config.rate_sticker)[event_index]
+    try:
+        rate = (config.rate_text, config.rate_sticker)[event_index]
 
-    if (
-        update.message.reply_to_message is not None
-            and update.message.reply_to_message.from_user.id == bottoken.self
-    ) or random.random() < rate:
-        # collect the candidates
+        if (
+            update.message.reply_to_message is not None
+                and update.message.reply_to_message.from_user.id == bottoken.self
+        ) or random.random() < rate:
+            # collect the candidates
 
-        candidates = collect(collect_operation, 0)
+            candidates = collect(collect_operation, 0)
 
-        # choose and send reply
+            # choose and send reply
 
-        payload = choose(candidates)
+            payload = choose(candidates)
 
-        if payload is not None:
-            reply_operation(payload)
-    else:
-        # train without collecting
+            if payload is not None:
+                reply_operation(payload)
+        else:
+            # train without collecting
 
-        train(collect_operation)
+            train(collect_operation)
+    except:
+        traceback.print_exc()
+        error_handler(bot, update, 'internal error')
 
 
 def text_handler(bot, update):

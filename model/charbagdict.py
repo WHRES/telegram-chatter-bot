@@ -15,23 +15,22 @@ class CharBagDictModel(BaseModel):
         if message.chat.id in c_last:
             last = c_last[message.chat.id]
 
-            c_set.add((set(last), payload))
+            c_set.add((last, payload))
 
         c_last[message.chat.id] = payload
 
         # choose the best reply
 
         if predict:
-            payload_set = set(payload)
             result = [
                 (
                     self._compare(
-                        payload_set,
-                        test_set
+                        set(payload),
+                        set(test_payload)
                     ) ** 1.5 * max(len(payload) / len(reply_payload), 1),
                     reply_payload,
                 )
-                for test_set, reply_payload in c_set
+                for test_payload, reply_payload in c_set
             ]
             total = sum(
                 weight

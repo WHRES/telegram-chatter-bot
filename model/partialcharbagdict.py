@@ -8,24 +8,23 @@ class PartialCharBagDictModel(BaseModel):
     def _compare(set1, set2):
         return len(set1.intersection(set2)) / (len(set1) + len(set2))
 
-    def _get(self, message, c_last, c_set, payload, predict):
+    def _get(self, message, c_set, payload, predict):
         # update the set
 
-        c_set.add((set(payload), payload))
+        c_set.add(payload)
 
         # choose the best reply
 
         if predict:
-            payload_set = set(payload)
             result = [
                 (
                     self._compare(
-                        payload_set,
-                        reply_set
+                        set(payload),
+                        set(reply_payload)
                     ) ** 1.5,
                     reply_payload,
                 )
-                for reply_set, reply_payload in c_set
+                for reply_payload in c_set
             ]
             total = sum(
                 weight
@@ -43,7 +42,6 @@ class PartialCharBagDictModel(BaseModel):
         if len(message.text) >= 3:
             return self._get(
                 message,
-                self.text_last,
                 self.text_set,
                 message.text,
                 predict

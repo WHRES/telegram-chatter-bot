@@ -1,8 +1,8 @@
 import config
 import bottoken
 import log
-from model.charbagdict import CharBagModel
-from model.charbagdict2 import CharBagModel2
+from model.charbagdict import CharBagDictModel
+from model.charbagdict2 import CharBagDict2Model
 from model.chatter import ChatterModel
 from model.fuzzdict import FuzzDictModel
 from model.memeda import MemedaModel
@@ -17,8 +17,8 @@ import jsonpickle
 from telegram.ext import Updater, MessageHandler, Filters
 
 models = [
-    (0.15, 0, CharBagModel()),
-    (0.15, 0, CharBagModel2()),
+    (0.15, 0, CharBagDictModel()),
+    (0.15, 0, CharBagDict2Model()),
     # (0, 0, ChatterModel()), # TODO
     (0.25, 0, FuzzDictModel()),
     (0.02, 0, MemedaModel()),
@@ -31,6 +31,7 @@ models = [
 
 
 def error_handler(bot, update, error):
+    print(error)
     log.error(update, error)
 
 
@@ -85,7 +86,7 @@ def handler(bot, update, event_index, collect_operation, reply_operation):
 
     if (
         update.message.reply_to_message is not None
-            and update.message.reply_to_message.chat.id == bottoken.self
+            and update.message.reply_to_message.from_user.id == bottoken.self
     ) or random.random() < rate:
         # collect the candidates
 

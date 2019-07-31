@@ -21,7 +21,7 @@ class PartialCharBagDictModel(BaseModel):
                     self._compare(
                         set(payload),
                         set(reply_payload)
-                    ) ** 1.5,
+                    ) ** 2,
                     reply_payload,
                 )
                 for reply_payload in c_set

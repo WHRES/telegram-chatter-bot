@@ -65,7 +65,7 @@ def choose(candidates, force):
         for weight, payload in candidates
     )
 
-    if force or random.random() < total:
+    if force or total >= 1:
         target = total * random.random()
 
         for weight, payload in candidates:
@@ -84,10 +84,10 @@ def handler(bot, update, event_index, collect_operation, reply_operation):
     log.log(update)
 
     try:
-        if update.message.reply_to_message is not None:
-            force = update.message.reply_to_message.from_user.id == bottoken.self
-        else:
-            force = False
+        force = update.message.chat.id == update.message.from_user.id or (
+            update.message.reply_to_message is not None
+            and update.message.reply_to_message.from_user.id == bottoken.self
+        )
         rate = (config.rate_text, config.rate_sticker)[event_index]
 
         if force or random.random() < rate:

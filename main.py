@@ -64,7 +64,7 @@ def choose(candidates, force):
         for weight, payload in candidates
     )
 
-    if force or total >= 1:
+    if force or random.random() < total:
         target = total * random.random()
 
         for weight, payload in candidates:

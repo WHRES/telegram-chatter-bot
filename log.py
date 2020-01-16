@@ -16,3 +16,9 @@ def error(update, err):
             jsonpickle.encode(update) + '\n'
             + jsonpickle.encode(err) + '\n'
         )
+
+
+def read_log():
+    with open(config.path_log, 'r') as file:
+        for line in file:
+            yield jsonpickle.decode(line)

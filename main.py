@@ -131,25 +131,24 @@ def sticker_handler(bot, update):
 
 
 def main():
-    # load historic data
+    # load historical data
 
     count = 0
 
-    with open(config.path_log, 'r') as file:
-        for line in file:
-            update = jsonpickle.decode(line)
+    for update in log.read_log():
+        count += 1
 
-            count += 1
-            if count % 1000 == 0:
-                print('load:', count)
+        if count % 1000 == 0:
+            print('load:', count)
 
-            if update.message is not None:
-                if update.message.text is not None:
-                    for _, _, model in models:
-                        model.text(update.message, False)
-                if update.message.sticker is not None:
-                    for _, _, model in models:
-                        model.sticker(update.message, False)
+        if update.message is not None:
+            if update.message.text is not None:
+                for _, _, model in models:
+                    model.text(update.message, False)
+
+            if update.message.sticker is not None:
+                for _, _, model in models:
+                    model.sticker(update.message, False)
 
     print('total:', count)
     print('ready')

@@ -1,8 +1,6 @@
 import random
+import telegram.ext
 import traceback
-
-import jsonpickle
-from telegram.ext import Updater, MessageHandler, Filters
 
 import bottoken
 import config
@@ -18,6 +16,7 @@ from model.partialcharbagdict import PartialCharBagDictModel
 from model.partialfuzzdict import PartialFuzzDictModel
 from model.repeat import RepeatModel
 
+
 models = [
     (0.1, 0, CharBagDictModel()),
     (0.1, 0, CharBagDict2Model()),
@@ -32,8 +31,8 @@ models = [
 ]
 
 
-def error_handler(_bot, update, err):
-    log.error(update, err)
+def error_handler(update, context):
+    log.error(update, context.error)
 
 
 def train(operation):
@@ -80,7 +79,7 @@ def choose(candidates, force):
     return None
 
 
-def handler(bot, update, event_index, collect_operation, reply_operation):
+def handler(update, event_index, collect_operation, reply_operation):
     log.log(update)
 
     try:
@@ -107,12 +106,11 @@ def handler(bot, update, event_index, collect_operation, reply_operation):
             train(collect_operation)
     except:
         traceback.print_exc()
-        error_handler(bot, update, 'internal error')
+        log.error(update, 'internal error')
 
 
-def text_handler(bot, update):
+def text_handler(update, _):
     handler(
-        bot,
         update,
         0,
         lambda model, predict: model.text(update.message, predict),
@@ -120,9 +118,8 @@ def text_handler(bot, update):
     )
 
 
-def sticker_handler(bot, update):
+def sticker_handler(update, _):
     handler(
-        bot,
         update,
         1,
         lambda model, predict: model.sticker(update.message, predict),
@@ -155,14 +152,21 @@ def main():
 
     # start the bot
 
-    updater = Updater(bottoken.token)
+    # TODO: remove `use_context=True`
+    updater = telegram.ext.Updater(bottoken.token, use_context=True)
 
     updater.dispatcher.add_error_handler(error_handler)
     updater.dispatcher.add_handler(
-        MessageHandler(Filters.text, text_handler)
+        telegram.ext.MessageHandler(
+            telegram.ext.Filters.text,
+            text_handler
+        )
     )
     updater.dispatcher.add_handler(
-        MessageHandler(Filters.sticker, sticker_handler)
+        telegram.ext.MessageHandler(
+            telegram.ext.Filters.sticker,
+            sticker_handler
+        )
     )
 
     updater.start_polling()
